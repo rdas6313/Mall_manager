@@ -1,0 +1,19 @@
+<table class="table border m-1">
+    <thead class="table-dark">
+      <tr>
+        {% for head in data.headers %}
+            <th scope="col">{{ head }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+        {% for row in data.rows %}
+            <tr>
+                {% for value in row %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        
+    </tbody>
+  </table>
