@@ -1,19 +1,26 @@
+{% if data.rows %}
 <table class="table border m-1">
     <thead class="table-dark">
-      <tr>
-        {% for head in data.headers %}
+        <tr>
+            {% for head in data.headers %}
             <th scope="col">{{ head }}</th>
-        {% endfor %}
-      </tr>
+            {% endfor %}
+        </tr>
     </thead>
     <tbody>
         {% for row in data.rows %}
-            <tr>
-                {% for value in row %}
-                    <td>{{ value }}</td>
-                {% endfor %}
-            </tr>
+        <tr>
+            {% for value in row %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
         {% endfor %}
-        
+
     </tbody>
-  </table>
+</table>
+{% else %}
+<div class="alert alert-info text-center" role="alert">
+    <b>No Data found!</b>
+</div>
+
+{% endif %}
