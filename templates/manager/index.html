@@ -40,9 +40,19 @@
       </div>
     </div>
     <div class="col">
-
+      <div class="row">
+        <h2 class="text-center">Customer</h2>
+      </div>
+      <div class="row">
+        {% include "manager/table.html" with data=customer %}
+      </div>
+      <div class="row">
+        {% include "manager/pagination.html" with page_data=customer.page %}
+      </div>
     </div>
+
   </div>
+</div>
 
 </div>
 </container>

@@ -9,7 +9,7 @@ def index(request, mall_id):
     table = request.GET.get('table', None)
     page = request.GET.get('page', 1)
     page_size = 2
-    current_pages = {'store': 1, 'inventory': 1, 'employee': 1}
+    current_pages = {'store': 1, 'inventory': 1, 'employee': 1, 'customer': 1}
     if table is not None and table in current_pages:
         current_pages[table] = int(page)
     store_headers = ('name', 'description', 'lease_start', 'lease_end')
@@ -36,6 +36,13 @@ def index(request, mall_id):
                              (current_pages['employee']-1): page_size * (current_pages['employee'])]
     employee_count = queryset.count()
 
+    customer_headers = ('name', 'phone', 'address', 'last_visit')
+    queryset = models.Customer.objects.filter(
+        mall=mall_id).values_list(*customer_headers)
+    customer_count = queryset.count()
+    customer_list = queryset[page_size *
+                             (current_pages['customer']-1): page_size * (current_pages['customer'])]
+    print(customer_list)
     context = {
         'store': {
             'headers': store_headers,
@@ -65,6 +72,16 @@ def index(request, mall_id):
                 'pages': [i+1 for i in range(ceil(employee_count/page_size))],
                 'table': 'employee',
                 'current_page': current_pages['employee']
+            }
+        },
+        'customer': {
+            'headers': customer_headers,
+            'rows': customer_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(customer_count/page_size))],
+                'table': 'customer',
+                'current_page': current_pages['customer']
             }
         }
     }
