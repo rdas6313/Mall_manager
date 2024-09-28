@@ -26,5 +26,24 @@
       </div>
     </div>
   </div>
-  </container>
-  {% endblock content %}
+  <div class="row">
+
+    <div class="col">
+      <div class="row">
+        <h2 class="text-center">Employee</h2>
+      </div>
+      <div class="row">
+        {% include "manager/table.html" with data=employee %}
+      </div>
+      <div class="row">
+        {% include "manager/pagination.html" with page_data=employee.page %}
+      </div>
+    </div>
+    <div class="col">
+
+    </div>
+  </div>
+
+</div>
+</container>
+{% endblock content %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from . import models
 from math import ceil
+from django.db.models import F
 
 
 def index(request, mall_id):
@@ -8,8 +9,8 @@ def index(request, mall_id):
     table = request.GET.get('table', None)
     page = request.GET.get('page', 1)
     page_size = 2
-    current_pages = {'store': 1, 'inventory': 1}
-    if table is not None:
+    current_pages = {'store': 1, 'inventory': 1, 'employee': 1}
+    if table is not None and table in current_pages:
         current_pages[table] = int(page)
     store_headers = ('name', 'description', 'lease_start', 'lease_end')
 
@@ -25,7 +26,16 @@ def index(request, mall_id):
     inventory_count = queryset.count()
     inventory_list = queryset[page_size *
                               (current_pages['inventory']-1): page_size * (current_pages['inventory'])]
-    print(type(page))
+
+    emp_headers = ['name', 'phone', 'address', 'store']
+    employee_headers = ('name', 'phone', 'address', 'store__name')
+
+    queryset = models.Employee.objects.filter(
+        mall=mall_id).select_related('store').values_list(*employee_headers)
+    employee_list = queryset[page_size *
+                             (current_pages['employee']-1): page_size * (current_pages['employee'])]
+    employee_count = queryset.count()
+
     context = {
         'store': {
             'headers': store_headers,
@@ -45,6 +55,16 @@ def index(request, mall_id):
                 'pages': [i+1 for i in range(ceil(inventory_count/page_size))],
                 'table': 'inventory',
                 'current_page': current_pages['inventory']
+            }
+        },
+        'employee': {
+            'headers': emp_headers,
+            'rows': employee_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(employee_count/page_size))],
+                'table': 'employee',
+                'current_page': current_pages['employee']
             }
         }
     }
