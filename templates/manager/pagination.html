@@ -1,15 +1,35 @@
 <nav aria-label="...">
-    <ul class="pagination justify-content-center">
-      <li class="page-item disabled">
-        <a class="page-link">Previous</a>
+  <ul class="pagination justify-content-center">
+    {% if page_data.current_page > 1 and page_data.current_page <= page_data.pages|last %} <li class="page-item">
+      <a class="page-link"
+        href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page_data.current_page|add:'-1' }}">Previous</a>
       </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item active" aria-current="page">
-        <a class="page-link" href="#">2</a>
+      {% endif %}
+      {% for page in page_data.pages %}
+      {% if page == page_data.current_page %}
+      <li class="page-item active">
+        <a class="page-link" href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page }}">
+          {{ page }}
+        </a>
       </li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      {% else %}
+
       <li class="page-item">
-        <a class="page-link" href="#">Next</a>
+        <a class="page-link" href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page }}">
+          {{ page }}
+        </a>
       </li>
-    </ul>
-  </nav>
+
+      {% endif %}
+      {% endfor %}
+      {% if page_data.current_page >= 1 and page_data.current_page < page_data.pages|last %} <li class="page-item">
+        <a class="page-link"
+          href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page_data.current_page|add:1 }}">Next</a>
+        </li>
+
+        {% endif %}
+
+
+
+  </ul>
+</nav>
