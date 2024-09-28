@@ -34,7 +34,7 @@ def index(request, mall_id):
                 'mall': mall_id,
                 'pages': [i+1 for i in range(ceil(store_count/page_size))],
                 'table': 'store',
-                'current_page': int(page)
+                'current_page': current_pages['store']
             }
         },
         'inventory': {
