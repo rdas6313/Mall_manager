@@ -22,6 +22,7 @@ def index(request, mall_id):
     inventory_headers = ('name', 'description', 'quantity')
     queryset = models.Inventory.objects.filter(
         mall=mall_id).values_list(*inventory_headers)
+    inventory_count = queryset.count()
     inventory_list = queryset[page_size *
                               (current_pages['inventory']-1): page_size * (current_pages['inventory'])]
     print(type(page))
@@ -38,7 +39,13 @@ def index(request, mall_id):
         },
         'inventory': {
             'headers': inventory_headers,
-            'rows': inventory_list
+            'rows': inventory_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(inventory_count/page_size))],
+                'table': 'inventory',
+                'current_page': current_pages['inventory']
+            }
         }
     }
     return render(request, 'manager/index.html', context=context)

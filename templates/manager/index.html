@@ -22,7 +22,7 @@
         {% include "manager/table.html" with data=inventory %}
       </div>
       <div class="col">
-        {% include "manager/pagination.html" %}
+        {% include "manager/pagination.html" with page_data=inventory.page %}
       </div>
     </div>
   </div>
