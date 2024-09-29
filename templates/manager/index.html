@@ -3,57 +3,111 @@
 {% block content %}
 <div class="container-fluid">
   <div class="row">
-    <div class="col">
+    <div class="col-12">
       <div class="row">
-        <h2 class="text-center">Stores</h2>
-      </div>
-      <div class="row">
-        {% include "manager/table.html" with data=store %}
-      </div>
-      <div class="row">
-        {% include "manager/pagination.html" with page_data=store.page %}
-      </div>
-    </div>
-    <div class="col">
-      <div class="row">
-        <h2 class="text-center">Inventory</h2>
-      </div>
-      <div class="col">
-        {% include "manager/table.html" with data=inventory %}
-      </div>
-      <div class="col">
-        {% include "manager/pagination.html" with page_data=inventory.page %}
-      </div>
-    </div>
-  </div>
-  <div class="row">
 
-    <div class="col">
-      <div class="row">
-        <h2 class="text-center">Employee</h2>
-      </div>
-      <div class="row">
-        {% include "manager/table.html" with data=employee %}
-      </div>
-      <div class="row">
-        {% include "manager/pagination.html" with page_data=employee.page %}
+        <div class="col">
+          <div class="card m-1">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-11">
+                  <h2 class="text-center">Stores</h2>
+                </div>
+                <div class="col-1 pt-2 text-end">
+                  <a href="#"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
+                      width="30" height="24"></a>
+                </div>
+              </div>
+              <div class="row">
+                {% include "manager/table.html" with data=store %}
+              </div>
+              <div class="row">
+                {% include "manager/pagination.html" with page_data=store.page %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col">
+          <div class="card m-1">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-11">
+                  <h2 class="text-center">Inventory</h2>
+                </div>
+                <div class="col-1 pt-2 text-end">
+                  <a href="#"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
+                      width="30" height="24"></a>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              {% include "manager/table.html" with data=inventory %}
+            </div>
+            <div class="col">
+              {% include "manager/pagination.html" with page_data=inventory.page %}
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-    <div class="col">
-      <div class="row">
-        <h2 class="text-center">Customer</h2>
+
+
+    <div class="row">
+
+      <div class="col">
+        <div class="card m-1">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-11">
+                <h2 class="text-center">Employee</h2>
+              </div>
+              <div class="col-1 pt-2 text-end">
+                <a href="#"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
+                    width="30" height="24"></a>
+              </div>
+            </div>
+            <div class="row">
+              {% include "manager/table.html" with data=employee %}
+            </div>
+            <div class="row">
+              {% include "manager/pagination.html" with page_data=employee.page %}
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="row">
-        {% include "manager/table.html" with data=customer %}
+
+
+      <div class="col">
+        <div class="card m-1">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-11">
+                <h2 class="text-center">Customer</h2>
+              </div>
+              <div class="col-1 pt-2 text-end">
+                <a href="#"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
+                    width="30" height="24"></a>
+              </div>
+            </div>
+            <div class="row">
+              {% include "manager/table.html" with data=customer %}
+            </div>
+            <div class="row">
+              {% include "manager/pagination.html" with page_data=customer.page %}
+            </div>
+
+          </div>
+
+        </div>
       </div>
-      <div class="row">
-        {% include "manager/pagination.html" with page_data=customer.page %}
-      </div>
+
     </div>
 
   </div>
 </div>
-
 </div>
-</container>
+</div>
 {% endblock content %}
