@@ -14,7 +14,7 @@
     </div>
     <div class="col-12">
         <label for="inputLeaseStart" class="form-label">Lease start</label>
-        <input type="text" class="form-control" id="inputLeaseStart" value="10/02/2020" readonly>
+        <input type="text" class="form-control" id="inputLeaseStart" value="{% now 'd / m / Y' %}" readonly>
     </div>
     <div class="col-12">
         {{form.lease_end.errors}}
