@@ -6,6 +6,11 @@
         <div class="card m-4">
             <div class="card-body">
                 <h5 class="card-title">{{ form_title }}</h5>
+                {% if form_status_msg %}
+                <div class="alert alert-primary" role="alert">
+                    {{form_status_msg}}
+                </div>
+                {% endif %}
                 {% if form_type == 'store' %}
                 {% include 'manager/add_store.html' %}
                 {% endif %}

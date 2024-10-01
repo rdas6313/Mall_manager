@@ -92,7 +92,7 @@ def index(request, mall_id):
 
 
 def edit_store(request, mall_id):
-
+    msg = None
     if request.method == 'POST':
         form = StoreForm(request.POST)
         if form.is_valid():
@@ -102,14 +102,17 @@ def edit_store(request, mall_id):
             try:
                 models.Store.objects.create(
                     name=name, description=description, lease_end=lease_end, mall_id=mall_id)
+                msg = 'Successfully created new store!'
+                form = StoreForm()
             except IntegrityError:
-                return HttpResponse('Unable to create due to integrity error!')
-            return HttpResponse('Submitted')
+                msg = 'Unable to create new store due to error!'
+
     else:
         form = StoreForm()
     context = {
         'form_title': 'Add Store',
         'form_type': 'store',
-        'form': form
+        'form': form,
+        'form_status_msg': msg
     }
     return render(request, 'manager/edit.html', context=context)
