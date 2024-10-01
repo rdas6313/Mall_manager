@@ -19,5 +19,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('<int:mall_id>/', views.index, name='index')
+    path('<int:mall_id>/', views.index, name='index'),
+    path('<int:mall_id>/edit/store',
+         views.edit_store, name='edit_store')
 ]

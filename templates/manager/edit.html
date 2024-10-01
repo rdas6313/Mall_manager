@@ -1,0 +1,24 @@
+{% extends "manager/parent.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="card m-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ form_title }}</h5>
+                {% if form_type == 'store' %}
+                {% include 'manager/add_store.html' %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="card">
+            <div class=" card-body">
+                <h5 class="card-title">List</h5>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

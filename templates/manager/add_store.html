@@ -1,0 +1,28 @@
+<form class="row g-3" action="{% url 'edit_store' 5 %}" method="post">
+    {% csrf_token %}
+    <div class="col-12">
+        {{form.name.errors}}
+        <label for="inputName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="inputName" name="{{form.name.html_name}}"
+            value="{{form.name.value}}">
+    </div>
+    <div class="col-12">
+        {{form.description.errors}}
+        <label for="inputDescription" class="form-label">Description</label>
+        <textarea class="form-control" id="inputDescription" rows="2"
+            name="{{form.description.html_name}}">{{form.description.value}}</textarea>
+    </div>
+    <div class="col-12">
+        <label for="inputLeaseStart" class="form-label">Lease start</label>
+        <input type="text" class="form-control" id="inputLeaseStart" value="10/02/2020" readonly>
+    </div>
+    <div class="col-12">
+        {{form.lease_end.errors}}
+        <label for="inputLeaseEnd" class="form-label">Lease end</label>
+        <input type="date" class="form-control" id="inputLeaseEnd" value="{{form.lease_end.value}}"
+            name="{{form.lease_end.html_name}}">
+    </div>
+    <div class="col-12 text-center">
+        <input type="submit" class="btn btn-primary" value="Add">
+    </div>
+</form>

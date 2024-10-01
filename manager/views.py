@@ -1,7 +1,10 @@
 from django.shortcuts import render, HttpResponse
+from django.http.response import Http404
 from . import models
 from math import ceil
 from django.db.models import F
+from django.db import IntegrityError
+from .forms import StoreForm
 
 
 def index(request, mall_id):
@@ -86,3 +89,27 @@ def index(request, mall_id):
         }
     }
     return render(request, 'manager/index.html', context=context)
+
+
+def edit_store(request, mall_id):
+
+    if request.method == 'POST':
+        form = StoreForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+            lease_end = form.cleaned_data['lease_end']
+            try:
+                models.Store.objects.create(
+                    name=name, description=description, lease_end=lease_end, mall_id=mall_id)
+            except IntegrityError:
+                return HttpResponse('Unable to create due to integrity error!')
+            return HttpResponse('Submitted')
+    else:
+        form = StoreForm()
+    context = {
+        'form_title': 'Add Store',
+        'form_type': 'store',
+        'form': form
+    }
+    return render(request, 'manager/edit.html', context=context)
