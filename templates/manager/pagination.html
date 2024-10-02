@@ -1,21 +1,22 @@
 <nav aria-label="...">
+  {% load custom_tags %}
   <ul class="pagination justify-content-center">
     {% if page_data.current_page > 1 and page_data.current_page <= page_data.pages|last %} <li class="page-item">
       <a class="page-link"
-        href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page_data.current_page|add:'-1' }}">Previous</a>
+        href="{% d_url page_data.url_name page_data.mall %}?table={{ page_data.table }}&page={{ page_data.current_page|add:'-1' }}">Previous</a>
       </li>
       {% endif %}
       {% for page in page_data.pages %}
       {% if page == page_data.current_page %}
       <li class="page-item active">
-        <a class="page-link" href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page }}">
+        <a class="page-link" href="{% d_url page_data.url_name page_data.mall %}?table={{ page_data.table }}&page={{ page }}">
           {{ page }}
         </a>
       </li>
       {% else %}
 
       <li class="page-item">
-        <a class="page-link" href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page }}">
+        <a class="page-link" href="{% d_url page_data.url_name page_data.mall %}?table={{ page_data.table }}&page={{ page }}">
           {{ page }}
         </a>
       </li>
@@ -24,7 +25,7 @@
       {% endfor %}
       {% if page_data.current_page >= 1 and page_data.current_page < page_data.pages|last %} <li class="page-item">
         <a class="page-link"
-          href="{% url 'index' page_data.mall %}?table={{ page_data.table }}&page={{ page_data.current_page|add:1 }}">Next</a>
+          href="{% d_url page_data.url_name page_data.mall %}?table={{ page_data.table }}&page={{ page_data.current_page|add:1 }}">Next</a>
         </li>
 
         {% endif %}

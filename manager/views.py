@@ -7,6 +7,18 @@ from django.db import IntegrityError
 from .forms import StoreForm
 
 
+def get_store_data(current_pages, page_size, mall_id):
+    store_headers = ('name', 'description', 'lease_start', 'lease_end')
+
+    queryset = models.Store.objects.filter(
+        mall=mall_id).order_by('-id').values_list(*store_headers)
+    store_count = queryset.count()
+    store_list = queryset[page_size *
+                          (current_pages['store']-1): page_size * current_pages['store']]
+
+    return (store_headers, store_list, store_count)
+
+
 def index(request, mall_id):
 
     table = request.GET.get('table', None)
@@ -15,13 +27,9 @@ def index(request, mall_id):
     current_pages = {'store': 1, 'inventory': 1, 'employee': 1, 'customer': 1}
     if table is not None and table in current_pages:
         current_pages[table] = int(page)
-    store_headers = ('name', 'description', 'lease_start', 'lease_end')
 
-    queryset = models.Store.objects.filter(
-        mall=mall_id).values_list(*store_headers)
-    store_count = queryset.count()
-    store_list = queryset[page_size *
-                          (current_pages['store']-1): page_size * current_pages['store']]
+    store_headers, store_list, store_count = get_store_data(
+        current_pages, page_size, mall_id)
 
     inventory_headers = ('name', 'description', 'quantity')
     queryset = models.Inventory.objects.filter(
@@ -54,7 +62,8 @@ def index(request, mall_id):
                 'mall': mall_id,
                 'pages': [i+1 for i in range(ceil(store_count/page_size))],
                 'table': 'store',
-                'current_page': current_pages['store']
+                'current_page': current_pages['store'],
+                'url_name': 'index'
             }
         },
         'inventory': {
@@ -64,7 +73,8 @@ def index(request, mall_id):
                 'mall': mall_id,
                 'pages': [i+1 for i in range(ceil(inventory_count/page_size))],
                 'table': 'inventory',
-                'current_page': current_pages['inventory']
+                'current_page': current_pages['inventory'],
+                'url_name': 'index'
             }
         },
         'employee': {
@@ -74,7 +84,8 @@ def index(request, mall_id):
                 'mall': mall_id,
                 'pages': [i+1 for i in range(ceil(employee_count/page_size))],
                 'table': 'employee',
-                'current_page': current_pages['employee']
+                'current_page': current_pages['employee'],
+                'url_name': 'index'
             }
         },
         'customer': {
@@ -84,7 +95,8 @@ def index(request, mall_id):
                 'mall': mall_id,
                 'pages': [i+1 for i in range(ceil(customer_count/page_size))],
                 'table': 'customer',
-                'current_page': current_pages['customer']
+                'current_page': current_pages['customer'],
+                'url_name': 'index'
             }
         }
     }
@@ -109,10 +121,32 @@ def edit_store(request, mall_id):
 
     else:
         form = StoreForm()
+
+    table = request.GET.get('table', 'store')
+    page = request.GET.get('page', 1)
+    page_size = 2
+    current_pages = {'store': 1}
+    if table is not None and table in current_pages:
+        current_pages[table] = int(page)
+
+    store_headers, store_list, store_count = get_store_data(
+        current_pages, page_size, mall_id)
+
     context = {
         'form_title': 'Add Store',
         'form_type': 'store',
         'form': form,
-        'form_status_msg': msg
+        'form_status_msg': msg,
+        'store': {
+            'headers': store_headers,
+            'rows': store_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(store_count/page_size))],
+                'table': 'store',
+                'current_page': current_pages['store'],
+                'url_name': 'edit_store'
+            }
+        }
     }
     return render(request, 'manager/edit.html', context=context)

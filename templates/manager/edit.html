@@ -21,7 +21,8 @@
         <div class="card">
             <div class=" card-body">
                 <h5 class="card-title">List</h5>
-
+                {% include "manager/table.html" with data=store %}
+                {% include "manager/pagination.html" with page_data=store.page %}
             </div>
         </div>
     </div>
