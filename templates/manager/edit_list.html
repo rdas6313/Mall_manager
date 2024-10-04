@@ -13,8 +13,8 @@
         {% for value in row %}
             {% if forloop.last  %}
                 <td>
-                    <button type="button" class="btn btn-success">Update</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    <button type="button" onclick="window.location.href='{% url 'update_store' data.page.mall value %}'" class="btn btn-success" >Update</button>
+                    <button type="button" onclick="window.location.href='http://www.example.com'" class="btn btn-danger">Delete</button>
                 </td>
             {% else %}
                 <td>{{ value }}</td>

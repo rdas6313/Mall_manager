@@ -1,9 +1,10 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import redirect, render, HttpResponse
 from django.http.response import Http404
 from . import models
 from math import ceil
 from django.db.models import F
 from django.db import IntegrityError
+from django.urls import reverse
 from .forms import StoreForm
 
 
@@ -125,6 +126,7 @@ def create_store(request, mall_id, store_id=None, is_update=1):
 
     table = request.GET.get('table', 'store')
     page = request.GET.get('page', 1)
+    msg = request.GET.get('msg', msg)
     page_size = 2
     current_pages = {'store': 1}
     if table is not None and table in current_pages:
@@ -137,11 +139,14 @@ def create_store(request, mall_id, store_id=None, is_update=1):
     store_list = store_list.annotate(
         action=F('id')).values_list(*store_headers)
 
+    form_url = reverse('create_store', args=[mall_id])
+
     context = {
         'form_title': 'Add Store',
         'form_type': 'store',
         'form': form,
         'form_status_msg': msg,
+        'form_url': form_url,
         'store': {
             'headers': store_headers,
             'rows': store_list,
@@ -153,5 +158,44 @@ def create_store(request, mall_id, store_id=None, is_update=1):
                 'url_name': 'create_store'
             }
         }
+    }
+    return render(request, 'manager/edit.html', context=context)
+
+
+def update_store(request, mall_id, store_id):
+    msg = None
+    form = None
+
+    if request.method == 'POST':
+        form = StoreForm(request.POST)
+        if form.is_valid():
+
+            row = models.Store.objects.filter(pk=store_id) \
+                .update(name=form.cleaned_data['name'],
+                        description=form.cleaned_data['description'],
+                        lease_end=form.cleaned_data['lease_end'])
+            if row > 0:
+                msg = 'updated successfully!'
+            else:
+                msg = 'Updation not happended,(Could be invalid store id)!'
+            url = reverse('create_store', args=[mall_id])
+            url += '?msg=' + msg
+            return redirect(url)
+
+    else:
+        store = models.Store.objects.filter(pk=store_id).values()
+        if store:
+            store = store[0]
+        else:
+            raise Http404('Wrong store!')
+        form = StoreForm(store)
+
+    form_url = reverse('update_store', args=[mall_id, store_id])
+    context = {
+        'form_title': 'Update Store',
+        'form_type': 'store',
+        'form': form,
+        'form_status_msg': msg,
+        'form_url': form_url
     }
     return render(request, 'manager/edit.html', context=context)

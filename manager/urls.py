@@ -22,6 +22,6 @@ urlpatterns = [
     path('<int:mall_id>/', views.index, name='index'),
     path('<int:mall_id>/create/store',
          views.create_store, name='create_store'),
-    # path('<int:mall_id>/edit/store/<int:store_id>/<int:is_update>',
-    #      views.edit_store, name='edit_store_with_id')
+    path('<int:mall_id>/store/update/<int:store_id>',
+         views.update_store, name='update_store')
 ]
