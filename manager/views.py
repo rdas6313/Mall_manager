@@ -140,6 +140,7 @@ def create_store(request, mall_id, store_id=None, is_update=1):
         action=F('id')).values_list(*store_headers)
 
     form_url = reverse('create_store', args=[mall_id])
+    back_url = reverse('index', args=[mall_id])
 
     context = {
         'form_title': 'Add Store',
@@ -147,6 +148,7 @@ def create_store(request, mall_id, store_id=None, is_update=1):
         'form': form,
         'form_status_msg': msg,
         'form_url': form_url,
+        'back_url': back_url,
         'store': {
             'headers': store_headers,
             'rows': store_list,
@@ -191,12 +193,14 @@ def update_store(request, mall_id, store_id):
         form = StoreForm(store)
 
     form_url = reverse('update_store', args=[mall_id, store_id])
+    back_url = reverse('create_store', args=[mall_id])
     context = {
         'form_title': 'Update Store',
         'form_type': 'store',
         'form': form,
         'form_status_msg': msg,
-        'form_url': form_url
+        'form_url': form_url,
+        'back_url': back_url
     }
     return render(request, 'manager/edit.html', context=context)
 
