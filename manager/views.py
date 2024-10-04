@@ -199,3 +199,14 @@ def update_store(request, mall_id, store_id):
         'form_url': form_url
     }
     return render(request, 'manager/edit.html', context=context)
+
+
+def delete_store(request, mall_id, store_id):
+    row = models.Store.objects.filter(pk=store_id).delete()
+    if row[0] > 0:
+        msg = "Successfully Deleted!"
+    else:
+        msg = "Unable to delete!"
+    url = reverse('create_store', args=[mall_id])
+    url += '?msg=' + msg
+    return redirect(url)
