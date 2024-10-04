@@ -11,7 +11,7 @@ def get_store_data(current_pages, page_size, mall_id):
     store_headers = ('name', 'description', 'lease_start', 'lease_end')
 
     queryset = models.Store.objects.filter(
-        mall=mall_id).order_by('-id').values_list(*store_headers)
+        mall=mall_id).order_by('-id')
     store_count = queryset.count()
     store_list = queryset[page_size *
                           (current_pages['store']-1): page_size * current_pages['store']]
@@ -30,6 +30,7 @@ def index(request, mall_id):
 
     store_headers, store_list, store_count = get_store_data(
         current_pages, page_size, mall_id)
+    store_list = store_list.values_list(*store_headers)
 
     inventory_headers = ('name', 'description', 'quantity')
     queryset = models.Inventory.objects.filter(
@@ -103,7 +104,7 @@ def index(request, mall_id):
     return render(request, 'manager/index.html', context=context)
 
 
-def edit_store(request, mall_id):
+def create_store(request, mall_id, store_id=None, is_update=1):
     msg = None
     if request.method == 'POST':
         form = StoreForm(request.POST)
@@ -132,6 +133,10 @@ def edit_store(request, mall_id):
     store_headers, store_list, store_count = get_store_data(
         current_pages, page_size, mall_id)
 
+    store_headers = (*store_headers, 'action')
+    store_list = store_list.annotate(
+        action=F('id')).values_list(*store_headers)
+
     context = {
         'form_title': 'Add Store',
         'form_type': 'store',
@@ -145,7 +150,7 @@ def edit_store(request, mall_id):
                 'pages': [i+1 for i in range(ceil(store_count/page_size))],
                 'table': 'store',
                 'current_page': current_pages['store'],
-                'url_name': 'edit_store'
+                'url_name': 'create_store'
             }
         }
     }

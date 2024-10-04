@@ -1,4 +1,4 @@
-<form class="row g-3" action="{% url 'edit_store' 5 %}" method="post">
+<form class="row g-3" action="{% url 'create_store' 5 %}" method="post">
     {% csrf_token %}
     <div class="col-12">
         {{form.name.errors}}
@@ -19,7 +19,7 @@
     <div class="col-12">
         {{form.lease_end.errors}}
         <label for="inputLeaseEnd" class="form-label">Lease end</label>
-        <input type="date" class="form-control" id="inputLeaseEnd" value="{{form.lease_end.value}}"
+        <input type="date" class="form-control" id="inputLeaseEnd" value="{{ form.lease_end.value|date:'Y-m-d' }}"
             name="{{form.lease_end.html_name}}">
     </div>
     <div class="col-12 text-center">

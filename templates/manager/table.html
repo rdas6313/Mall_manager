@@ -1,13 +1,16 @@
 {% if data.rows %}
 <table class="table border m-1">
     <thead class="table-dark">
+        {% block table_head %}
         <tr>
             {% for head in data.headers %}
             <th scope="col">{{ head }}</th>
             {% endfor %}
         </tr>
+        {% endblock table_head %}
     </thead>
     <tbody>
+        {% block table_body %}
         {% for row in data.rows %}
         <tr>
             {% for value in row %}
@@ -15,6 +18,7 @@
             {% endfor %}
         </tr>
         {% endfor %}
+        {% endblock table_body %}
 
     </tbody>
 </table>

@@ -1,0 +1,25 @@
+{% extends "manager/table.html" %}
+{% block table_head %}
+    <tr>
+        {% for head in data.headers %}
+        <th scope="col">{{ head }}</th>
+        {% endfor %}
+    </tr>
+{% endblock table_head %}
+
+{% block table_body %}
+    {% for row in data.rows %}
+    <tr>
+        {% for value in row %}
+            {% if forloop.last  %}
+                <td>
+                    <button type="button" class="btn btn-success">Update</button>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                </td>
+            {% else %}
+                <td>{{ value }}</td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+{% endblock table_body %}
