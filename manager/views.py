@@ -327,4 +327,11 @@ def update_inventory(request, mall_id, inventory_id):
 
 
 def delete_inventory(request, mall_id, inventory_id):
-    pass
+    row = models.Inventory.objects.filter(pk=inventory_id).delete()
+    if row[0] > 0:
+        msg = "Successfully Deleted!"
+    else:
+        msg = "Unable to delete!"
+    url = reverse('create_inventory', args=[mall_id])
+    url += '?msg=' + msg
+    return redirect(url)
