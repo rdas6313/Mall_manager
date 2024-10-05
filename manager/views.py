@@ -151,6 +151,8 @@ def create_store(request, mall_id, store_id=None, is_update=1):
         'back_url': back_url,
         'form_template': 'manager/add_store.html',
         'list_data': {
+            'update_url_name': 'update_store',
+            'delete_url_name': 'delete_store',
             'headers': store_headers,
             'rows': store_list,
             'page': {
@@ -266,6 +268,8 @@ def create_inventory(request, mall_id):
         'back_url': back_url,
         'form_template': 'manager/add_inventory.html',
         'list_data': {
+            'update_url_name': 'update_inventory',
+            'delete_url_name': 'delete_inventory',
             'headers': store_headers,
             'rows': store_list,
             'page': {
@@ -278,3 +282,49 @@ def create_inventory(request, mall_id):
         }
     }
     return render(request, 'manager/edit.html', context=context)
+
+
+def update_inventory(request, mall_id, inventory_id):
+    msg = None
+    form = None
+
+    if request.method == 'POST':
+        form = InventoryForm(request.POST)
+        if form.is_valid():
+
+            row = models.Inventory.objects.filter(pk=inventory_id) \
+                .update(name=form.cleaned_data['name'],
+                        description=form.cleaned_data['description'],
+                        quantity=form.cleaned_data['quantity'])
+            if row > 0:
+                msg = 'updated successfully!'
+            else:
+                msg = 'Updation not happended due to may be invalid inventory id!'
+            url = reverse('create_inventory', args=[mall_id])
+            url += '?msg=' + msg
+            return redirect(url)
+
+    else:
+        inventory = models.Inventory.objects.filter(pk=inventory_id).values()
+        if inventory:
+            inventory = inventory[0]
+        else:
+            raise Http404('Wrong inventory!')
+        form = InventoryForm(inventory)
+
+    form_url = reverse('update_inventory', args=[mall_id, inventory_id])
+    back_url = reverse('create_inventory', args=[mall_id])
+    context = {
+        'form_title': 'Update Inventory',
+        'form_type': 'store',
+        'form': form,
+        'form_status_msg': msg,
+        'form_url': form_url,
+        'back_url': back_url,
+        'form_template': 'manager/add_inventory.html',
+    }
+    return render(request, 'manager/edit.html', context=context)
+
+
+def delete_inventory(request, mall_id, inventory_id):
+    pass

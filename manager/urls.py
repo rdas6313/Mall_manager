@@ -28,5 +28,10 @@ urlpatterns = [
          views.delete_store, name='delete_store'),
 
     path('<int:mall_id>/inventory/create',
-         views.create_inventory, name='create_inventory')
+         views.create_inventory, name='create_inventory'),
+
+    path('<int:mall_id>/inventory/update/<int:inventory_id>',
+         views.update_inventory, name='update_inventory'),
+    path('<int:mall_id>/inventory/delete/<int:inventory_id>',
+         views.delete_inventory, name='delete_inventory')
 ]

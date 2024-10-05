@@ -1,4 +1,6 @@
+
 {% extends "manager/table.html" %}
+{% load custom_tags %}
 {% block table_head %}
     <tr>
         {% for head in data.headers %}
@@ -13,8 +15,8 @@
         {% for value in row %}
             {% if forloop.last  %}
                 <td>
-                    <button type="button" onclick="window.location.href='{% url 'update_store' data.page.mall value %}'" class="btn btn-success" >Update</button>
-                    <button type="button" onclick="window.location.href='{% url 'delete_store' data.page.mall value %}'" class="btn btn-danger">Delete</button>
+                    <button type="button" onclick="window.location.href='{% d_url data.update_url_name data.page.mall value %}'" class="btn btn-success" >Update</button>
+                    <button type="button" onclick="window.location.href='{% d_url data.delete_url_name data.page.mall value %}'" class="btn btn-danger">Delete</button>
                 </td>
             {% else %}
                 <td>{{ value }}</td>
