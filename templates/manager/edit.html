@@ -16,19 +16,18 @@
                     {{form_status_msg}}
                 </div>
                 {% endif %}
-                {% if form_type == 'store' %}
-                {% include 'manager/add_store.html' %}
-                {% endif %}
+                {% include form_template %}
+                
             </div>
         </div>
     </div>
-    {% if store %}
+    {% if list_data %}
     <div class="row justify-content-center">
         <div class="card">
             <div class=" card-body">
                 <h5 class="card-title">List</h5>
-                {% include "manager/edit_list.html" with data=store %}
-                {% include "manager/pagination.html" with page_data=store.page %}
+                {% include "manager/edit_list.html" with data=list_data %}
+                {% include "manager/pagination.html" with page_data=list_data.page %}
             </div>
         </div>
     </div>

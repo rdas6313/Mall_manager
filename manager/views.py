@@ -3,9 +3,9 @@ from django.http.response import Http404
 from . import models
 from math import ceil
 from django.db.models import F
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.urls import reverse
-from .forms import StoreForm
+from .forms import StoreForm, InventoryForm
 
 
 def get_store_data(current_pages, page_size, mall_id):
@@ -149,7 +149,8 @@ def create_store(request, mall_id, store_id=None, is_update=1):
         'form_status_msg': msg,
         'form_url': form_url,
         'back_url': back_url,
-        'store': {
+        'form_template': 'manager/add_store.html',
+        'list_data': {
             'headers': store_headers,
             'rows': store_list,
             'page': {
@@ -200,7 +201,8 @@ def update_store(request, mall_id, store_id):
         'form': form,
         'form_status_msg': msg,
         'form_url': form_url,
-        'back_url': back_url
+        'back_url': back_url,
+        'form_template': 'manager/add_store.html',
     }
     return render(request, 'manager/edit.html', context=context)
 
@@ -214,3 +216,65 @@ def delete_store(request, mall_id, store_id):
     url = reverse('create_store', args=[mall_id])
     url += '?msg=' + msg
     return redirect(url)
+
+
+def create_inventory(request, mall_id):
+    msg = None
+    if request.method == 'POST':
+        form = InventoryForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+            quantity = form.cleaned_data['quantity']
+            try:
+                with transaction.atomic():
+                    inventory = models.Inventory.objects.create(
+                        name=name, description=description, quantity=quantity)
+                    mall = models.Mall.objects.get(pk=mall_id)
+                    mall.inventories.add(inventory)
+                msg = 'Successfully created new inventory item!'
+                form = InventoryForm()
+            except IntegrityError:
+                msg = 'Unable to create new inventory item due to error!'
+            except models.Mall.DoesNotExist:
+                msg = 'Unable to create new inventory item due to invalid mall id!'
+            except Exception as e:
+                msg = f'unknown error {e}'
+
+    else:
+        form = InventoryForm()
+
+    page = request.GET.get('page', 1)
+    msg = request.GET.get('msg', msg)
+    page_size = 2
+    current_pages = int(page)
+    store_headers = ('name', 'description', 'quantity', 'action')
+    queryset = models.Inventory.objects.filter(
+        mall=mall_id).annotate(action=F('id')).order_by('-id').values_list(*store_headers)
+    store_count = queryset.count()
+    store_list = queryset[page_size *
+                          (current_pages-1): page_size * current_pages]
+
+    form_url = reverse('create_inventory', args=[mall_id])
+    back_url = reverse('index', args=[mall_id])
+
+    context = {
+        'form_title': 'Add Inventory',
+        'form': form,
+        'form_status_msg': msg,
+        'form_url': form_url,
+        'back_url': back_url,
+        'form_template': 'manager/add_inventory.html',
+        'list_data': {
+            'headers': store_headers,
+            'rows': store_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(store_count/page_size))],
+                'table': 'inventory',
+                'current_page': current_pages,
+                'url_name': 'create_inventory'
+            }
+        }
+    }
+    return render(request, 'manager/edit.html', context=context)
