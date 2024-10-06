@@ -8,6 +8,9 @@ from django.urls import reverse
 from .forms import StoreForm, InventoryForm, EmployeeForm
 
 
+PAGE_SIZE = 4
+
+
 def get_store_data(current_pages, page_size, mall_id):
     store_headers = ('name', 'description', 'lease_start', 'lease_end')
 
@@ -344,9 +347,29 @@ def create_employee(request, mall_id):
     if request.method == 'POST':
         form = EmployeeForm(request.POST, choices=choices)
         if form.is_valid():
-            pass
+            name = form.cleaned_data.get('name')
+            phone = form.cleaned_data.get('phone')
+            address = form.cleaned_data.get('address')
+            store = form.cleaned_data.get('store', None)
+            try:
+                models.Employee.objects.create(
+                    name=name, phone=phone, address=address, store_id=store, mall_id=mall_id)
+                form = EmployeeForm(choices=choices)
+                msg = "Employee created successfully!"
+            except IntegrityError:
+                msg = "Error: Unable to create employee!"
     else:
         form = EmployeeForm(choices=choices)
+
+    page_size = PAGE_SIZE
+    current_page = int(request.GET.get('page', 1))
+    employee_headers = ('name', 'phone', 'address',
+                        'store_name', 'action')
+    queryset = models.Employee.objects.filter(mall=mall_id).annotate(
+        store_name=F('store__name'), action=F('id')).order_by('-id').values_list(*employee_headers)
+    employee_count = queryset.count()
+    employee_list = queryset[page_size *
+                             (current_page-1): page_size * current_page]
 
     form_url = reverse('create_employee', args=[mall_id])
     back_url = reverse('index', args=[mall_id])
@@ -358,6 +381,19 @@ def create_employee(request, mall_id):
         'form_url': form_url,
         'back_url': back_url,
         'form_template': 'manager/add_employee.html',
+        'list_data': {
+            'update_url_name': 'update_employee',
+            'delete_url_name': 'delete_employee',
+            'headers': employee_headers,
+            'rows': employee_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(employee_count/page_size))],
+                'table': 'inventory',
+                'current_page': current_page,
+                'url_name': 'create_employee'
+            }
+        }
 
     }
     return render(request, 'manager/edit.html', context=context)
