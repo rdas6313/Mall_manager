@@ -27,7 +27,7 @@ def index(request, mall_id):
 
     table = request.GET.get('table', None)
     page = request.GET.get('page', 1)
-    page_size = 2
+    page_size = PAGE_SIZE
     current_pages = {'store': 1, 'inventory': 1, 'employee': 1, 'customer': 1}
     if table is not None and table in current_pages:
         current_pages[table] = int(page)
@@ -130,7 +130,7 @@ def create_store(request, mall_id, store_id=None, is_update=1):
     table = request.GET.get('table', 'store')
     page = request.GET.get('page', 1)
     msg = request.GET.get('msg', msg)
-    page_size = 2
+    page_size = PAGE_SIZE
     current_pages = {'store': 1}
     if table is not None and table in current_pages:
         current_pages[table] = int(page)
@@ -251,7 +251,7 @@ def create_inventory(request, mall_id):
 
     page = request.GET.get('page', 1)
     msg = request.GET.get('msg', msg)
-    page_size = 2
+    page_size = PAGE_SIZE
     current_pages = int(page)
     store_headers = ('name', 'description', 'quantity', 'action')
     queryset = models.Inventory.objects.filter(
