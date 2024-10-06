@@ -349,10 +349,10 @@ def create_employee(request, mall_id):
             name = form.cleaned_data.get('name')
             phone = form.cleaned_data.get('phone')
             address = form.cleaned_data.get('address')
-            store = form.cleaned_data.get('store', None)
+            store_id = form.cleaned_data.get('store_id', None)
             try:
                 models.Employee.objects.create(
-                    name=name, phone=phone, address=address, store_id=store, mall_id=mall_id)
+                    name=name, phone=phone, address=address, store_id=store_id, mall_id=mall_id)
                 form = EmployeeForm(choices=choices)
                 msg = "Employee created successfully!"
             except IntegrityError:
@@ -400,7 +400,40 @@ def create_employee(request, mall_id):
 
 
 def update_employee(request, mall_id, emp_id):
-    pass
+    msg = None
+    choices = [(None, 'None')] + [(store.id, store.name)
+                                  for store in models.Store.objects.filter(mall=mall_id).all().distinct()]
+    if request.method == "POST":
+        form = EmployeeForm(request.POST, choices=choices)
+        if form.is_valid():
+            row = models.Employee.objects.filter(pk=emp_id).update(name=form.cleaned_data['name'], phone=form.cleaned_data['phone'],
+                                                                   address=form.cleaned_data['address'],
+                                                                   store_id=form.cleaned_data['store_id'])
+            if row > 0:
+                msg = 'updated successfully!'
+            else:
+                msg = 'Updation not happended due to may be invalid employee id!'
+            url = reverse('create_employee', args=[mall_id])
+            url += '?msg=' + msg
+            return redirect(url)
+    else:
+        emp = models.Employee.objects.filter(
+            pk=emp_id).values()
+        emp = emp[0] if emp else None
+        form = EmployeeForm(emp, choices=choices)
+
+    form_url = reverse('update_employee', args=[mall_id, emp_id])
+    back_url = reverse('create_employee', args=[mall_id])
+    context = {
+        'form_title': 'Update Employee',
+        'form_type': 'store',
+        'form': form,
+        'form_status_msg': msg,
+        'form_url': form_url,
+        'back_url': back_url,
+        'form_template': 'manager/add_employee.html',
+    }
+    return render(request, 'manager/edit.html', context=context)
 
 
 def delete_employee(request, mall_id, emp_id):

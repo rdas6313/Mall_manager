@@ -21,10 +21,10 @@ class EmployeeForm(forms.Form):
                             initial='', required=True)
     address = forms.CharField(
         max_length=300, widget=forms.Textarea, initial='', required=True)
-    store = forms.ChoiceField(
+    store_id = forms.ChoiceField(
         choices=[], widget=forms.Select(attrs={'class': 'form-select'}), required=False)
 
     def __init__(self, *args, **kwargs):
         choices = kwargs.pop('choices', [])
         super(EmployeeForm, self).__init__(*args, **kwargs)
-        self.fields['store'].choices = choices
+        self.fields['store_id'].choices = choices
