@@ -5,7 +5,7 @@ from math import ceil
 from django.db.models import F
 from django.db import IntegrityError, transaction
 from django.urls import reverse
-from .forms import StoreForm, InventoryForm
+from .forms import StoreForm, InventoryForm, EmployeeForm
 
 
 def get_store_data(current_pages, page_size, mall_id):
@@ -335,3 +335,37 @@ def delete_inventory(request, mall_id, inventory_id):
     url = reverse('create_inventory', args=[mall_id])
     url += '?msg=' + msg
     return redirect(url)
+
+
+def create_employee(request, mall_id):
+    msg = None
+    choices = [(None, 'None')] + [(store.id, store.name)
+                                  for store in models.Store.objects.filter(mall=mall_id).all().distinct()]
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST, choices=choices)
+        if form.is_valid():
+            pass
+    else:
+        form = EmployeeForm(choices=choices)
+
+    form_url = reverse('create_employee', args=[mall_id])
+    back_url = reverse('index', args=[mall_id])
+
+    context = {
+        'form_title': 'Add Employee',
+        'form': form,
+        'form_status_msg': msg,
+        'form_url': form_url,
+        'back_url': back_url,
+        'form_template': 'manager/add_employee.html',
+
+    }
+    return render(request, 'manager/edit.html', context=context)
+
+
+def update_employee(request, mall_id, emp_id):
+    pass
+
+
+def delete_employee(request, mall_id, emp_id):
+    pass

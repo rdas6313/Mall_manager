@@ -33,5 +33,12 @@ urlpatterns = [
     path('<int:mall_id>/inventory/update/<int:inventory_id>',
          views.update_inventory, name='update_inventory'),
     path('<int:mall_id>/inventory/delete/<int:inventory_id>',
-         views.delete_inventory, name='delete_inventory')
+         views.delete_inventory, name='delete_inventory'),
+
+    path('<int:mall_id>/employee/create',
+         views.create_employee, name='create_employee'),
+    path('<int:mall_id>/employee/update/<int:emp_id>',
+         views.update_employee, name='update_employee'),
+    path('<int:mall_id>/employee/delete/<int:emp_id>',
+         views.delete_employee, name='delete_employee')
 ]

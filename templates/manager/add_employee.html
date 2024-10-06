@@ -1,0 +1,28 @@
+<form class="row g-3" action="{{form_url}}" method="POST">
+    {% csrf_token %}
+    <div class="col-12">
+        {{form.name.errors}}
+        <label for="inputName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="inputName" name="{{form.name.html_name}}"
+            value="{{form.name.value}}">
+    </div>
+    <div class="col-12">
+        {{form.phone.errors}}
+        <label for="inputPhone" class="form-label">Phone</label>
+        <input type="text" class="form-control" id="inputPhone" name="{{form.phone.html_name}}" value="{{form.phone.value}}">
+    </div>
+    <div class="col-12">
+        {{form.address.errors}}
+        <label for="inputAddress" class="form-label">Address</label>
+        <textarea class="form-control" id="inputAddress" rows="2"
+            name="{{form.address.html_name}}">{{form.address.value}}</textarea>
+    </div>
+    <div class="col-12">
+        {{form.store.errors}}
+        <label for="inputStore" class="form-label">Store</label>
+        {{form.store}}
+    </div>
+    <div class="col-12 text-center">
+        <input type="submit" class="btn btn-primary" value="Add">
+    </div>
+</form>
