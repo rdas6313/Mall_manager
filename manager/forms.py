@@ -12,4 +12,4 @@ class InventoryForm(forms.Form):
     name = forms.CharField(max_length=100, initial='', required=True)
     description = forms.CharField(
         max_length=300, widget=forms.Textarea, initial='', required=True)
-    quantity = forms.IntegerField(min_value=0, max_value=1000, initial=0)
+    quantity = forms.IntegerField(min_value=1, max_value=1000, initial=0)
