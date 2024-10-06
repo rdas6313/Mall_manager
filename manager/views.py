@@ -341,7 +341,6 @@ def delete_inventory(request, mall_id, inventory_id):
 
 
 def create_employee(request, mall_id):
-    msg = None
     choices = [(None, 'None')] + [(store.id, store.name)
                                   for store in models.Store.objects.filter(mall=mall_id).all().distinct()]
     if request.method == 'POST':
@@ -362,6 +361,7 @@ def create_employee(request, mall_id):
         form = EmployeeForm(choices=choices)
 
     page_size = PAGE_SIZE
+    msg = request.GET.get('msg', None)
     current_page = int(request.GET.get('page', 1))
     employee_headers = ('name', 'phone', 'address',
                         'store_name', 'action')
@@ -389,7 +389,7 @@ def create_employee(request, mall_id):
             'page': {
                 'mall': mall_id,
                 'pages': [i+1 for i in range(ceil(employee_count/page_size))],
-                'table': 'inventory',
+                'table': 'None',
                 'current_page': current_page,
                 'url_name': 'create_employee'
             }
@@ -404,4 +404,11 @@ def update_employee(request, mall_id, emp_id):
 
 
 def delete_employee(request, mall_id, emp_id):
-    pass
+    row = models.Employee.objects.filter(pk=emp_id).delete()
+    if row[0] > 0:
+        msg = "Successfully Deleted!"
+    else:
+        msg = "Unable to delete!"
+    url = reverse('create_employee', args=[mall_id])
+    url += '?msg=' + msg
+    return redirect(url)
