@@ -445,3 +445,45 @@ def delete_employee(request, mall_id, emp_id):
     url = reverse('create_employee', args=[mall_id])
     url += '?msg=' + msg
     return redirect(url)
+
+
+def list_customer(request, mall_id):
+    page_size = PAGE_SIZE
+    msg = request.GET.get('msg', None)
+    current_page = int(request.GET.get('page', 1))
+    customer_headers = ('name', 'phone', 'address', 'last_visit', 'action')
+    queryset = models.Customer.objects.filter(
+        mall=mall_id).annotate(action=F('id')).order_by('-last_visit').values_list(*customer_headers)
+    customer_list = queryset[page_size *
+                             (current_page-1): page_size * current_page]
+
+    customer_count = queryset.count()
+    back_url = reverse('index', args=[mall_id])
+    context = {
+        'form_status_msg': msg,
+        'back_url': back_url,
+        'list_data': {
+            'delete_url_name': 'delete_customer',
+            'headers': customer_headers,
+            'rows': customer_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(customer_count/page_size))],
+                'table': 'None',
+                'current_page': current_page,
+                'url_name': 'customer_list'
+            }
+        }
+    }
+    return render(request, 'manager/edit.html', context=context)
+
+
+def delete_customer(request, mall_id, customer_id):
+    row = models.Customer.objects.filter(pk=customer_id).delete()
+    if row[0] > 0:
+        msg = "Successfully Deleted!"
+    else:
+        msg = "Unable to delete!"
+    url = reverse('customer_list', args=[mall_id])
+    url += '?msg=' + msg
+    return redirect(url)
