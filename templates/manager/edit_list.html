@@ -16,10 +16,10 @@
             {% if forloop.last  %}
                 <td>
                     {% if data.update_url_name %}
-                    <button type="button" onclick="window.location.href='{% d_url data.update_url_name data.page.mall value %}'" class="btn btn-success" >Update</button>
+                    <button type="button" onclick="window.location.href='{% d_url data.update_url_name value %}'" class="btn btn-success" >Update</button>
                     {% endif %}
                     {% if data.delete_url_name %}
-                    <button type="button" onclick="window.location.href='{% d_url data.delete_url_name data.page.mall value %}'" class="btn btn-danger">Delete</button>
+                    <button type="button" onclick="window.location.href='{% d_url data.delete_url_name value %}'" class="btn btn-danger">Delete</button>
                     {% endif %}
                 </td>
             {% else %}

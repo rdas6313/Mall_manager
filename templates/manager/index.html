@@ -3,6 +3,12 @@
 {% block content %}
 <div class="container-fluid">
   <div class="row">
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <input type="submit" value="Logout">
+    </form>
+  </div>
+  <div class="row">
     <div class="col-12">
       <div class="row">
 
@@ -14,7 +20,7 @@
                   <h2 class="text-center">Stores</h2>
                 </div>
                 <div class="col-1 pt-2 text-end">
-                  <a href="{% url 'create_store' store.page.mall %}"><img
+                  <a href="{% url 'create_store' %}"><img
                       src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo" width="30"
                       height="24"></a>
                 </div>
@@ -38,7 +44,7 @@
                   <h2 class="text-center">Inventory</h2>
                 </div>
                 <div class="col-1 pt-2 text-end">
-                  <a href="{% url 'create_inventory' inventory.page.mall %}"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
+                  <a href="{% url 'create_inventory' %}"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
                       width="30" height="24"></a>
                 </div>
               </div>
@@ -66,7 +72,7 @@
                 <h2 class="text-center">Employee</h2>
               </div>
               <div class="col-1 pt-2 text-end">
-                <a href="{% url 'create_employee' inventory.page.mall %}"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
+                <a href="{% url 'create_employee' %}"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
                     width="30" height="24"></a>
               </div>
             </div>
@@ -89,7 +95,7 @@
                 <h2 class="text-center">Customer</h2>
               </div>
               <div class="col-1 pt-2 text-end">
-                <a href="{% url 'customer_list' customer.page.mall %}"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
+                <a href="{% url 'customer_list' %}"><img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="Logo"
                     width="30" height="24"></a>
               </div>
             </div>
