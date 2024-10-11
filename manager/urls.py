@@ -43,5 +43,6 @@ urlpatterns = [
          views.delete_employee, name='delete_employee'),
     path('customer', views.list_customer, name='customer_list'),
     path('customer/delete/<int:customer_id>',
-         views.delete_customer, name='delete_customer')
+         views.delete_customer, name='delete_customer'),
+    path('accounts/register', views.register_user, name='user_register')
 ]

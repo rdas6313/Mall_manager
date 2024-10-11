@@ -5,8 +5,10 @@ from math import ceil
 from django.db.models import F
 from django.db import IntegrityError, transaction
 from django.urls import reverse
-from .forms import StoreForm, InventoryForm, EmployeeForm
+from .forms import StoreForm, InventoryForm, EmployeeForm, UserRegistrationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 PAGE_SIZE = 4
@@ -511,3 +513,25 @@ def delete_customer(request,  customer_id):
     url = reverse('customer_list')
     url += '?msg=' + msg
     return redirect(url)
+
+
+def register_user(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    user = User.objects.create_user(
+                        username=form.cleaned_data['username'], email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
+                    models.Mall.objects.create(
+                        name=form.cleaned_data['mall_name'], address=form.cleaned_data['mall_address'], user=user)
+                    messages.success(request, 'Account created successfully!')
+                    return redirect('login')
+            except IntegrityError as e:
+                messages.error(request, f'Unable to register! {e}')
+    else:
+        form = UserRegistrationForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'registration/register_user.html', context)

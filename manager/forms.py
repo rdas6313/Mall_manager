@@ -1,4 +1,6 @@
+from typing import Any
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 
 
 class StoreForm(forms.Form):
@@ -28,3 +30,14 @@ class EmployeeForm(forms.Form):
         choices = kwargs.pop('choices', [])
         super(EmployeeForm, self).__init__(*args, **kwargs)
         self.fields['store_id'].choices = choices
+
+
+class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True, initial='')
+    mall_name = forms.CharField(max_length=100, initial='', required=True)
+    mall_address = forms.CharField(
+        max_length=300, widget=forms.Textarea, initial='', required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].initial = ''
