@@ -3,10 +3,17 @@
 {% block content %}
 <div class="container-fluid">
   <div class="row">
-    <form method="post" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <input type="submit" value="Logout">
-    </form>
+    <div class="col-12">
+      <div class="card m-2">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{user.username |capfirst}}</h5>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-primary" value="Logout">
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-12">
