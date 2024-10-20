@@ -9,6 +9,12 @@ from .Filters import QuantityFilter
 # Register your models here.
 
 
+class StoreInline(admin.StackedInline):
+    model = models.Store
+    min_num = 1
+    extra = 0
+
+
 @admin.register(models.Mall)
 class MallAdmin(admin.ModelAdmin):
     list_display = ['name',  'customer_count', 'inventory_count']
@@ -16,6 +22,7 @@ class MallAdmin(admin.ModelAdmin):
     ordering = ['name']
     search_fields = ['name__istartswith']
     autocomplete_fields = ['customers', 'inventories']
+    inlines = [StoreInline]
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related('inventories', 'customers')

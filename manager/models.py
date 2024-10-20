@@ -9,8 +9,8 @@ class Mall(models.Model):
     """ Here we define the data model for mall information """
     name = models.CharField(max_length=100)
     address = models.TextField()
-    customers = models.ManyToManyField('Customer')
-    inventories = models.ManyToManyField('Inventory')
+    customers = models.ManyToManyField('Customer', blank=True)
+    inventories = models.ManyToManyField('Inventory', blank=True)
 
     def __str__(self):
         return self.name
