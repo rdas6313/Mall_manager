@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 PHONE_REGEX = '\d{10,11}'
@@ -11,6 +12,7 @@ class Mall(models.Model):
     address = models.TextField()
     customers = models.ManyToManyField('Customer', blank=True)
     inventories = models.ManyToManyField('Inventory', blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name

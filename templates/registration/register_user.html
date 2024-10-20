@@ -1,0 +1,51 @@
+{% extends "manager/parent.html" %}
+{% block content %}
+<div class="container">
+    {% if messages %}
+    <div class="row m-5">
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>  
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row m-5">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{form.mall_name.errors}}
+                <label for="exampleInputMallName" class="form-label">Mall Name</label>
+                <input type="text" class="form-control" id="exampleInputMallName" name="{{form.mall_name.html_name}}" value={{form.mall_name.value}}>
+              </div>
+            <div class="mb-3">
+            {{form.username.errors}}
+            <label for="exampleInputUserName" class="form-label">User Name</label>
+            <input type="text" class="form-control" id="exampleInputUserName" name="{{form.username.html_name}}" value={{form.username.value}}>
+            </div>
+            <div class="mb-3">
+                {{form.email.errors}}
+              <label for="exampleInputEmail1" class="form-label">Email</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name={{form.email.html_name}} value={{form.email.value}}>
+              <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+                {{form.mall_address.errors}}
+                <label for="exampleFormControlTextarea1" class="form-label">Address</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name={{form.mall_address.html_name}}>{{form.mall_address.value}}</textarea>
+              </div>
+            <div class="mb-3">
+                {{form.password1.errors}}
+              <label for="exampleInputPassword1" class="form-label">Password</label>
+              <input type="password" class="form-control" id="exampleInputPassword1" name="{{form.password1.html_name}}">
+            </div>
+            <div class="mb-3">
+                {{form.password2.errors}}
+                <label for="exampleInputPassword2" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword2" name="{{form.password2.html_name}}">
+            </div>
+            <input type="submit" class="btn btn-primary" value="submit">
+          </form>
+    </div>
+</div>
+{% endblock content %}

@@ -19,26 +19,30 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('<int:mall_id>/', views.index, name='index'),
-    path('<int:mall_id>/create/store',
+    path('', views.index, name='index'),
+    path('create/store',
          views.create_store, name='create_store'),
-    path('<int:mall_id>/store/update/<int:store_id>',
+    path('store/update/<int:store_id>',
          views.update_store, name='update_store'),
-    path('<int:mall_id>/store/delete/<int:store_id>',
+    path('store/delete/<int:store_id>',
          views.delete_store, name='delete_store'),
 
-    path('<int:mall_id>/inventory/create',
+    path('inventory/create',
          views.create_inventory, name='create_inventory'),
 
-    path('<int:mall_id>/inventory/update/<int:inventory_id>',
+    path('inventory/update/<int:inventory_id>',
          views.update_inventory, name='update_inventory'),
-    path('<int:mall_id>/inventory/delete/<int:inventory_id>',
+    path('inventory/delete/<int:inventory_id>',
          views.delete_inventory, name='delete_inventory'),
 
-    path('<int:mall_id>/employee/create',
+    path('employee/create',
          views.create_employee, name='create_employee'),
-    path('<int:mall_id>/employee/update/<int:emp_id>',
+    path('employee/update/<int:emp_id>',
          views.update_employee, name='update_employee'),
-    path('<int:mall_id>/employee/delete/<int:emp_id>',
-         views.delete_employee, name='delete_employee')
+    path('employee/delete/<int:emp_id>',
+         views.delete_employee, name='delete_employee'),
+    path('customer', views.list_customer, name='customer_list'),
+    path('customer/delete/<int:customer_id>',
+         views.delete_customer, name='delete_customer'),
+    path('accounts/register', views.register_user, name='user_register')
 ]

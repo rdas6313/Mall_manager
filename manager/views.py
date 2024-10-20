@@ -5,7 +5,10 @@ from math import ceil
 from django.db.models import F
 from django.db import IntegrityError, transaction
 from django.urls import reverse
-from .forms import StoreForm, InventoryForm, EmployeeForm
+from .forms import StoreForm, InventoryForm, EmployeeForm, UserRegistrationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 PAGE_SIZE = 4
@@ -23,8 +26,9 @@ def get_store_data(current_pages, page_size, mall_id):
     return (store_headers, store_list, store_count)
 
 
-def index(request, mall_id):
-
+@login_required
+def index(request):
+    mall_id = request.user.mall.id
     table = request.GET.get('table', None)
     page = request.GET.get('page', 1)
     page_size = PAGE_SIZE
@@ -58,7 +62,7 @@ def index(request, mall_id):
     customer_count = queryset.count()
     customer_list = queryset[page_size *
                              (current_pages['customer']-1): page_size * (current_pages['customer'])]
-    print(customer_list)
+
     context = {
         'store': {
             'headers': store_headers,
@@ -108,7 +112,9 @@ def index(request, mall_id):
     return render(request, 'manager/index.html', context=context)
 
 
-def create_store(request, mall_id, store_id=None, is_update=1):
+@login_required
+def create_store(request, store_id=None, is_update=1):
+    mall_id = request.user.mall.id
     msg = None
     if request.method == 'POST':
         form = StoreForm(request.POST)
@@ -142,8 +148,8 @@ def create_store(request, mall_id, store_id=None, is_update=1):
     store_list = store_list.annotate(
         action=F('id')).values_list(*store_headers)
 
-    form_url = reverse('create_store', args=[mall_id])
-    back_url = reverse('index', args=[mall_id])
+    form_url = reverse('create_store')
+    back_url = reverse('index')
 
     context = {
         'form_title': 'Add Store',
@@ -170,7 +176,9 @@ def create_store(request, mall_id, store_id=None, is_update=1):
     return render(request, 'manager/edit.html', context=context)
 
 
-def update_store(request, mall_id, store_id):
+@login_required
+def update_store(request, store_id):
+    mall_id = request.user.mall.id
     msg = None
     form = None
 
@@ -186,7 +194,7 @@ def update_store(request, mall_id, store_id):
                 msg = 'updated successfully!'
             else:
                 msg = 'Updation not happended,(Could be invalid store id)!'
-            url = reverse('create_store', args=[mall_id])
+            url = reverse('create_store')
             url += '?msg=' + msg
             return redirect(url)
 
@@ -198,8 +206,8 @@ def update_store(request, mall_id, store_id):
             raise Http404('Wrong store!')
         form = StoreForm(store)
 
-    form_url = reverse('update_store', args=[mall_id, store_id])
-    back_url = reverse('create_store', args=[mall_id])
+    form_url = reverse('update_store', args=[store_id])
+    back_url = reverse('create_store')
     context = {
         'form_title': 'Update Store',
         'form_type': 'store',
@@ -212,18 +220,22 @@ def update_store(request, mall_id, store_id):
     return render(request, 'manager/edit.html', context=context)
 
 
-def delete_store(request, mall_id, store_id):
+@login_required
+def delete_store(request, store_id):
+    mall_id = request.user.mall.id
     row = models.Store.objects.filter(pk=store_id).delete()
     if row[0] > 0:
         msg = "Successfully Deleted!"
     else:
         msg = "Unable to delete!"
-    url = reverse('create_store', args=[mall_id])
+    url = reverse('create_store')
     url += '?msg=' + msg
     return redirect(url)
 
 
-def create_inventory(request, mall_id):
+@login_required
+def create_inventory(request):
+    mall_id = request.user.mall.id
     msg = None
     if request.method == 'POST':
         form = InventoryForm(request.POST)
@@ -260,8 +272,8 @@ def create_inventory(request, mall_id):
     store_list = queryset[page_size *
                           (current_pages-1): page_size * current_pages]
 
-    form_url = reverse('create_inventory', args=[mall_id])
-    back_url = reverse('index', args=[mall_id])
+    form_url = reverse('create_inventory')
+    back_url = reverse('index')
 
     context = {
         'form_title': 'Add Inventory',
@@ -287,7 +299,9 @@ def create_inventory(request, mall_id):
     return render(request, 'manager/edit.html', context=context)
 
 
-def update_inventory(request, mall_id, inventory_id):
+@login_required
+def update_inventory(request, inventory_id):
+    mall_id = request.user.mall.id
     msg = None
     form = None
 
@@ -303,7 +317,7 @@ def update_inventory(request, mall_id, inventory_id):
                 msg = 'updated successfully!'
             else:
                 msg = 'Updation not happended due to may be invalid inventory id!'
-            url = reverse('create_inventory', args=[mall_id])
+            url = reverse('create_inventory')
             url += '?msg=' + msg
             return redirect(url)
 
@@ -315,8 +329,8 @@ def update_inventory(request, mall_id, inventory_id):
             raise Http404('Wrong inventory!')
         form = InventoryForm(inventory)
 
-    form_url = reverse('update_inventory', args=[mall_id, inventory_id])
-    back_url = reverse('create_inventory', args=[mall_id])
+    form_url = reverse('update_inventory', args=[inventory_id])
+    back_url = reverse('create_inventory')
     context = {
         'form_title': 'Update Inventory',
         'form_type': 'store',
@@ -329,18 +343,22 @@ def update_inventory(request, mall_id, inventory_id):
     return render(request, 'manager/edit.html', context=context)
 
 
-def delete_inventory(request, mall_id, inventory_id):
+@login_required
+def delete_inventory(request, inventory_id):
+    mall_id = request.user.mall.id
     row = models.Inventory.objects.filter(pk=inventory_id).delete()
     if row[0] > 0:
         msg = "Successfully Deleted!"
     else:
         msg = "Unable to delete!"
-    url = reverse('create_inventory', args=[mall_id])
+    url = reverse('create_inventory')
     url += '?msg=' + msg
     return redirect(url)
 
 
-def create_employee(request, mall_id):
+@login_required
+def create_employee(request):
+    mall_id = request.user.mall.id
     choices = [(None, 'None')] + [(store.id, store.name)
                                   for store in models.Store.objects.filter(mall=mall_id).all().distinct()]
     if request.method == 'POST':
@@ -371,8 +389,8 @@ def create_employee(request, mall_id):
     employee_list = queryset[page_size *
                              (current_page-1): page_size * current_page]
 
-    form_url = reverse('create_employee', args=[mall_id])
-    back_url = reverse('index', args=[mall_id])
+    form_url = reverse('create_employee')
+    back_url = reverse('index')
 
     context = {
         'form_title': 'Add Employee',
@@ -399,7 +417,9 @@ def create_employee(request, mall_id):
     return render(request, 'manager/edit.html', context=context)
 
 
-def update_employee(request, mall_id, emp_id):
+@login_required
+def update_employee(request, emp_id):
+    mall_id = request.user.mall.id
     msg = None
     choices = [(None, 'None')] + [(store.id, store.name)
                                   for store in models.Store.objects.filter(mall=mall_id).all().distinct()]
@@ -413,7 +433,7 @@ def update_employee(request, mall_id, emp_id):
                 msg = 'updated successfully!'
             else:
                 msg = 'Updation not happended due to may be invalid employee id!'
-            url = reverse('create_employee', args=[mall_id])
+            url = reverse('create_employee')
             url += '?msg=' + msg
             return redirect(url)
     else:
@@ -422,8 +442,8 @@ def update_employee(request, mall_id, emp_id):
         emp = emp[0] if emp else None
         form = EmployeeForm(emp, choices=choices)
 
-    form_url = reverse('update_employee', args=[mall_id, emp_id])
-    back_url = reverse('create_employee', args=[mall_id])
+    form_url = reverse('update_employee', args=[emp_id])
+    back_url = reverse('create_employee')
     context = {
         'form_title': 'Update Employee',
         'form_type': 'store',
@@ -436,12 +456,82 @@ def update_employee(request, mall_id, emp_id):
     return render(request, 'manager/edit.html', context=context)
 
 
-def delete_employee(request, mall_id, emp_id):
+@login_required
+def delete_employee(request, emp_id):
+    mall_id = request.user.mall.id
     row = models.Employee.objects.filter(pk=emp_id).delete()
     if row[0] > 0:
         msg = "Successfully Deleted!"
     else:
         msg = "Unable to delete!"
-    url = reverse('create_employee', args=[mall_id])
+    url = reverse('create_employee')
     url += '?msg=' + msg
     return redirect(url)
+
+
+@login_required
+def list_customer(request):
+    mall_id = request.user.mall.id
+    page_size = PAGE_SIZE
+    msg = request.GET.get('msg', None)
+    current_page = int(request.GET.get('page', 1))
+    customer_headers = ('name', 'phone', 'address', 'last_visit', 'action')
+    queryset = models.Customer.objects.filter(
+        mall=mall_id).annotate(action=F('id')).order_by('-last_visit').values_list(*customer_headers)
+    customer_list = queryset[page_size *
+                             (current_page-1): page_size * current_page]
+
+    customer_count = queryset.count()
+    back_url = reverse('index')
+    context = {
+        'form_status_msg': msg,
+        'back_url': back_url,
+        'list_data': {
+            'delete_url_name': 'delete_customer',
+            'headers': customer_headers,
+            'rows': customer_list,
+            'page': {
+                'mall': mall_id,
+                'pages': [i+1 for i in range(ceil(customer_count/page_size))],
+                'table': 'None',
+                'current_page': current_page,
+                'url_name': 'customer_list'
+            }
+        }
+    }
+    return render(request, 'manager/edit.html', context=context)
+
+
+@login_required
+def delete_customer(request,  customer_id):
+    mall_id = request.user.mall.id
+    row = models.Customer.objects.filter(pk=customer_id).delete()
+    if row[0] > 0:
+        msg = "Successfully Deleted!"
+    else:
+        msg = "Unable to delete!"
+    url = reverse('customer_list')
+    url += '?msg=' + msg
+    return redirect(url)
+
+
+def register_user(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    user = User.objects.create_user(
+                        username=form.cleaned_data['username'], email=form.cleaned_data['email'], password=form.cleaned_data['password1'])
+                    models.Mall.objects.create(
+                        name=form.cleaned_data['mall_name'], address=form.cleaned_data['mall_address'], user=user)
+                    messages.success(request, 'Account created successfully!')
+                    return redirect('login')
+            except IntegrityError as e:
+                messages.error(request, f'Unable to register! {e}')
+    else:
+        form = UserRegistrationForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'registration/register_user.html', context)
